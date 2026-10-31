@@ -19,9 +19,9 @@ class Settings(BaseSettings):
     REPORT_STORAGE_PATH: str = "./storage/reports"
     
     # AI服务配置
-    QWEN_API_KEY: Optional[str] = None  # 通义千问API密钥
-    QWEN_MODEL: str = "qwen-plus"  # 通义千问模型名称
-    AI_SERVICE_URL: Optional[str] = None
+    DEEPSEEK_API_KEY: Optional[str] = None
+    DEEPSEEK_BASE_URL: str = "https://api.deepseek.com"
+    DEEPSEEK_MODEL: str = "deepseek-flash"
     
     # 语音服务配置
     SPEECH_RECOGNITION_SERVICE: str = "google"  # 语音识别服务提供商
