@@ -16,12 +16,15 @@ class AIService:
     """
     
     def __init__(self):
-        # 获取API密钥
-        self.api_key = os.getenv("DASHSCOPE_API_KEY") or "sk-ea0da86aed5646b6b3683bacddc5ecae"
-        logger.info(f"使用API密钥: {self.api_key[:5]}... 初始化DashScope客户端")
-        
-        # 初始化dashscope
-        dashscope.api_key = self.api_key
+        # Read credentials only from the server environment. Never ship API keys
+        # in source code or in the Android application.
+        self.api_key = os.getenv("DASHSCOPE_API_KEY") or os.getenv("QWEN_API_KEY")
+        if self.api_key:
+            dashscope.api_key = self.api_key
+            logger.info("DashScope client initialized from environment configuration")
+        else:
+            dashscope.api_key = None
+            logger.warning("DashScope API key is not configured; AI requests will use the service fallback path")
     
     def generate_initial_message(self, scenario: Dict[str, Any]) -> Optional[str]:
         """
