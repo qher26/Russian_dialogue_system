@@ -13,7 +13,7 @@
 ### 核心功能
 - **多场景对话练习**：提供餐厅点餐、购物、问路等多种俄语对话场景
 - **语音对话交互**：支持语音输入和语音回复，模拟真实对话环境
-- **智能AI对话**：基于通义千问大模型的AI助手，提供自然流畅的俄语对话
+- **智能AI对话**：基于 DeepSeek 大模型的 AI 助手，提供自然流畅的俄语对话
 - **多维度评分系统**：从发音、语法、流利度、词汇四个方面对用户表达进行评分
 - **对话报告分析**：生成详细的对话报告，包含高亮金句、情感分析和改进建议
 - **离线缓存支持**：网络不稳定时也能使用，数据会在网络恢复后同步
@@ -30,7 +30,7 @@
 - FastAPI - 高性能Web框架
 - SQLAlchemy - ORM框架
 - SQLite - 数据库
-- DashScope/Qwen - 阿里云通义千问大模型API
+- DeepSeek API - OpenAI兼容接口
 - SpeechRecognition - 语音识别
 - PyAudio - 音频处理
 
@@ -66,14 +66,14 @@ talk_to_ai_fullstack/
    pip install -r requirements.txt
    ```
 
-3. 设置DashScope API密钥:
+3. 设置 DeepSeek API Key:
    ```
-   export DASHSCOPE_API_KEY=你的API密钥
+   export DEEPSEEK_API_KEY=你的API密钥
    ```
    
    Windows系统使用:
    ```
-   set DASHSCOPE_API_KEY=你的API密钥
+   set DEEPSEEK_API_KEY=你的API密钥
    ```
 
 4. 初始化数据库:
@@ -230,7 +230,7 @@ chmod +x scripts/dev-start.sh
 
 ### 环境变量
 
-- `DASHSCOPE_API_KEY` - 阿里云DashScope API密钥（必需）
+- `DEEPSEEK_API_KEY` - DeepSeek API Key（必需）
 - `AUDIO_STORAGE_PATH` - 音频文件存储路径（可选，默认为`./storage`）
 
 ## 开发指南
