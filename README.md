@@ -263,3 +263,30 @@ chmod +x scripts/dev-start.sh
 ## 联系方式
 
 如有问题，请提交Issue或联系项目维护者。
+
+
+## Render 后端部署（不要求连接 GitHub 账号）
+
+如果 Render 的 Git Provider 连接不可用，也可以使用 Render 的 **Public Git Repository** 方式部署本仓库。该方式不需要把 GitHub 账号授权给 Render，但不会自动部署后续的 Git 更新。
+
+1. 注册并登录 Render。
+2. 选择 **New → Web Service → Public Git Repository**。
+3. 输入公开仓库：`https://github.com/qher26/Russian_dialogue_system`。
+4. Runtime 选择 **Docker**；Dockerfile Path 填 `./backend/Dockerfile`；Docker Context Directory 填 `./backend`。
+5. Region 选择 **Singapore**；Plan 选择 **Starter**。
+6. 添加 Persistent Disk：Mount Path 填 `/data`，大小先选 `1 GB`。
+7. Health Check Path 填 `/health`。
+8. 在 Environment Variables 添加：
+   - `DEEPSEEK_API_KEY`：你自己的 DeepSeek API Key（只在 Render 控制台输入）。
+   - `DEEPSEEK_BASE_URL`：`https://api.deepseek.com`。
+   - `DEEPSEEK_MODEL`：`deepseek-flash`。
+   - `SECRET_KEY`：随机长字符串。
+   - `DATABASE_URL`：`sqlite:////data/talk_to_ai.db`。
+   - `AUDIO_STORAGE_PATH`：`/data/audio`。
+   - `REPORT_STORAGE_PATH`：`/data/reports`。
+
+服务上线后，打开 `https://你的服务域名/health`，预期返回 `{"status":"healthy"}`。然后在 GitHub Actions 手动运行 **Build Android APK**，将 `api_base_url` 设为 `https://你的服务域名/api/v1`。
+
+**费用说明：** Render Starter Web Service 当前为约 US$7/月；Persistent Disk 按 US$0.25/GB/月另计。Render 免费实例会休眠，且没有可挂载的持久化磁盘，因此不适合当前使用 SQLite 保存对话数据的版本。创建付费服务前请核对控制台显示的最终金额。
+
+**限制：** 通过 Public Git Repository 部署时不会自动跟随 GitHub 提交更新；代码变化后需要在 Render 手动触发部署。
