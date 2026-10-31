@@ -9,9 +9,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async'; // 添加超时异常支持
 
 class ApiService {
-  // 开发环境使用本地后端
-  static const String baseUrl = 'http://192.168.31.183:8000/api/v1'; // 使用本地IP地址访问后端服务
-  static const String apiKey = 'YOUR_API_KEY_HERE'; // 在实际应用中，这应该从安全的地方获取
+  // Pass the deployed backend URL at build time, for example:
+  // flutter build apk --dart-define=API_BASE_URL=https://your-host.example.com/api/v1
+  static const String baseUrl = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: 'https://YOUR_BACKEND_HOST/api/v1',
+  );
   
   String? _authToken;
 
