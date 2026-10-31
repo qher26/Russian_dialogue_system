@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: russian-dialogue-api
+    runtime: docker
+    plan: starter
+    region: singapore
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /health
+    disk:
+      name: russian-dialogue-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: DEEPSEEK_API_KEY
+        sync: false
+      - key: DEEPSEEK_BASE_URL
+        value: https://api.deepseek.com
+      - key: DEEPSEEK_MODEL
+        value: deepseek-flash
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        value: sqlite:////data/talk_to_ai.db
+      - key: AUDIO_STORAGE_PATH
+        value: /data/audio
+      - key: REPORT_STORAGE_PATH
+        value: /data/reports
