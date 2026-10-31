@@ -207,22 +207,18 @@ docker run -p 8000:8000 talk-to-ai-backend
 
 
 
-## Railway 部署（推荐给个人使用）
 
-1. 在 Railway 创建 Project，选择 Deploy from GitHub Repo，导入 `qher26/Russian_dialogue_system`。
-2. Service Settings 的 Root Directory 设置为 `/backend`。
-3. 创建 Volume，挂载路径填写 `/data`。
-4. Networking 中生成 Public Domain，取得 HTTPS 域名。
 
-在 Railway Variables 中添加：
-- `DEEPSEEK_API_KEY`：你自己的 DeepSeek API Key。
-- `DEEPSEEK_BASE_URL`：`https://api.deepseek.com`。
-- `DEEPSEEK_MODEL`：`deepseek-flash`（当前官方通用模型名）。
-- `SECRET_KEY`：自行生成的随机长字符串。
-- `DATABASE_URL`：`sqlite:////data/talk_to_ai.db`。
-- `AUDIO_STORAGE_PATH`：`/data/audio`。
-- `REPORT_STORAGE_PATH`：`/data/reports`。
+## Render 部署（不需要连接 GitHub 账号）
 
-部署成功后，访问 `https://你的Railway域名/health`，应返回 `{"status":"healthy"}`。API 文档位于 `/docs`。
+1. 注册并登录 Render。
+2. 选择 New → Web Service → Public Git Repository，填入 `https://github.com/qher26/Russian_dialogue_system`。
+3. Runtime 选 Docker；Dockerfile Path 为 `./backend/Dockerfile`；Docker Context Directory 为 `./backend`。
+4. Region 选 Singapore；Compute 选 0.5 CPU / 512 MB（plan ID `0.5c-512mb`）。
+5. 添加 Persistent Disk：Mount Path 为 `/data`，先选 1 GB。
+6. Health Check Path 填 `/health`。
+7. 在 Environment Variables 添加 `DEEPSEEK_API_KEY`、`DEEPSEEK_BASE_URL=https://api.deepseek.com`、`DEEPSEEK_MODEL=deepseek-flash`、随机 `SECRET_KEY`、`DATABASE_URL=sqlite:////data/talk_to_ai.db`、`AUDIO_STORAGE_PATH=/data/audio` 和 `REPORT_STORAGE_PATH=/data/reports`。
 
-API Key 仅保存在 Railway Variables，不能写进 Flutter APK 或提交到 Git。
+`DEEPSEEK_API_KEY` 只能填写在 Render 控制台，禁止写进代码或 APK。服务上线后访问 `/health` 确认状态，再用服务域名构建 Android APK。
+
+通过 Public Git Repository 部署时不需要 GitHub OAuth 授权，但不会自动部署后续 Git 提交。Render 免费服务休眠且没有持久化磁盘，不适合当前 SQLite 配置；付费计算与磁盘费用请以控制台的当期报价为准。
