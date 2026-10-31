@@ -204,3 +204,41 @@ docker run -p 8000:8000 talk-to-ai-backend
 ## 联系方式
 
 如有问题，请提交Issue或联系项目维护者。
+
+## Railway 部署（推荐给个人使用）
+
+本项目可以通过 Railway 从 GitHub 自动构建后端容器。部署前请先 Fork 仓库，并在 Railway 中连接自己的 GitHub 账号。
+
+### 1. 创建服务
+
+1. 在 Railway 创建一个新 Project，选择 Deploy from GitHub Repo。
+2. 选择自己的 `qher26/Russian_dialogue_system` 仓库。
+3. 在 Service Settings 中将 Root Directory 设置为 `/backend`，Railway 会自动使用此目录下的 `Dockerfile`。
+4. 在 Volumes 中创建一个持久化卷，挂载路径填写 `/data`。
+5. 在 Networking 中生成一个 Public Domain，记下生成的 HTTPS 域名。
+
+### 2. 配置环境变量
+
+在 Railway 服务的 Variables 页面添加：
+
+- `DASHSCOPE_API_KEY`：你在阿里云百炼创建的 API Key。
+- `DASHSCOPE_HTTP_BASE_URL`：与 API Key 同地域的 DashScope 原生 API Host。新加坡共享域名可填 `https://dashscope-intl.aliyuncs.com/api/v1`。
+- `QWEN_MODEL`：模型名称，默认 `qwen-plus`。
+- `SECRET_KEY`：自行生成的随机长字符串，不要使用默认值。
+- `DATABASE_URL`：`sqlite:////data/talk_to_ai.db`。
+- `AUDIO_STORAGE_PATH`：`/data/audio`。
+- `REPORT_STORAGE_PATH`：`/data/reports`。
+
+### 3. 检查服务
+
+部署成功后，访问 `https://你的Railway域名/health`，应返回 `{"status":"healthy"}`。API 文档位于 `/docs`。
+
+### 4. 构建 Android APK
+
+部署后，在 GitHub Actions 手动运行 `Build Android APK` 工作流，并将 `api_base_url` 填为：
+
+`https://你的Railway域名/api/v1`
+
+工作流会上传名为 `talk-to-ai-android-apk` 的构建产物。下载 ZIP 并解压，即可取得 APK。
+
+**重要：** API Key 只能放在 Railway 后端环境变量中，不要放进 Flutter APK、GitHub 文件或聊天消息中。SQLite 数据和音频文件依赖挂载到 `/data` 的持久化卷保存。
