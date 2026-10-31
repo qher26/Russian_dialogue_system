@@ -143,7 +143,7 @@ app/
 
 ### 环境变量
 
-- `DASHSCOPE_API_KEY` - sk-ea0da86aed5646b6b3683bacddc5ecae
+- `DASHSCOPE_API_KEY` - 阿里云DashScope API密钥（必需；仅在后端服务器环境变量中配置，不要写入代码或提交到Git）
 - `AUDIO_STORAGE_PATH` - 音频文件存储路径（可选，默认为`./storage`）
 
 ### 数据库
