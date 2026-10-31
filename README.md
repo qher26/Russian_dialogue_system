@@ -273,7 +273,7 @@ chmod +x scripts/dev-start.sh
 2. 选择 **New → Web Service → Public Git Repository**。
 3. 输入公开仓库：`https://github.com/qher26/Russian_dialogue_system`。
 4. Runtime 选择 **Docker**；Dockerfile Path 填 `./backend/Dockerfile`；Docker Context Directory 填 `./backend`。
-5. Region 选择 **Singapore**；Plan 选择 **Starter**。
+5. Region 选择 **Singapore**；Plan 选择 **0.5 CPU / 512 MB（`0.5c-512mb`）**。
 6. 添加 Persistent Disk：Mount Path 填 `/data`，大小先选 `1 GB`。
 7. Health Check Path 填 `/health`。
 8. 在 Environment Variables 添加：
@@ -287,6 +287,6 @@ chmod +x scripts/dev-start.sh
 
 服务上线后，打开 `https://你的服务域名/health`，预期返回 `{"status":"healthy"}`。然后在 GitHub Actions 手动运行 **Build Android APK**，将 `api_base_url` 设为 `https://你的服务域名/api/v1`。
 
-**费用说明：** Render Starter Web Service 当前为约 US$7/月；Persistent Disk 按 US$0.25/GB/月另计。Render 免费实例会休眠，且没有可挂载的持久化磁盘，因此不适合当前使用 SQLite 保存对话数据的版本。创建付费服务前请核对控制台显示的最终金额。
+**费用说明：** Render 0.5 CPU / 512 MB Web Service 当前约 US$7/月；Persistent Disk 按 US$0.25/GB/月另计。Render 免费实例会休眠，且没有可挂载的持久化磁盘，因此不适合当前使用 SQLite 保存对话数据的版本。创建付费服务前请核对控制台显示的最终金额。
 
 **限制：** 通过 Public Git Repository 部署时不会自动跟随 GitHub 提交更新；代码变化后需要在 Render 手动触发部署。
