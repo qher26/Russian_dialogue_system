@@ -25,6 +25,13 @@ class AIService:
         else:
             dashscope.api_key = None
             logger.warning("DashScope API key is not configured; AI requests will use the service fallback path")
+
+        # Use the endpoint from the same Model Studio region as the API key.
+        dashscope.base_http_api_url = os.getenv(
+            "DASHSCOPE_HTTP_BASE_URL",
+            "https://dashscope-intl.aliyuncs.com/api/v1",
+        )
+        self.model = os.getenv("QWEN_MODEL", "qwen-plus")
     
     def generate_initial_message(self, scenario: Dict[str, Any]) -> Optional[str]:
         """
@@ -54,7 +61,7 @@ class AIService:
             logger.debug(f"请求参数: {messages}")
             
             response = dashscope.Generation.call(
-                model="qwen-plus",
+                model=self.model,
                 messages=messages,
                 result_format="message"
             )
