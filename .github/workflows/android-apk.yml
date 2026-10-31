@@ -1,0 +1,61 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      api_base_url:
+        description: "Backend API base URL ending in /api/v1 (HTTPS recommended)"
+        required: true
+        type: string
+  push:
+    branches:
+      - main
+    paths:
+      - "frontend/**"
+      - ".github/workflows/android-apk.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build release APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install Flutter dependencies
+        working-directory: frontend
+        run: flutter pub get
+
+      - name: Build Android APK
+        working-directory: frontend
+        env:
+          API_BASE_URL: ${{ inputs.api_base_url || vars.API_BASE_URL || 'https://YOUR_BACKEND_HOST/api/v1' }}
+        run: |
+          if [ -z "$API_BASE_URL" ]; then
+            echo "API_BASE_URL is required."
+            exit 1
+          fi
+          flutter build apk --release --dart-define=API_BASE_URL="$API_BASE_URL"
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: talk-to-ai-android-apk
+          path: frontend/build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+          retention-days: 14
